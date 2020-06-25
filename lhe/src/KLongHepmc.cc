@@ -75,6 +75,7 @@ int main(int argc,char** argv)
     // kL decay vertex
     TLorentzVector kl, d1, d2, d3, vtx;
     double vz;
+    double vtx_prod[3] = {0.0, 2.0, 50.0}; //beamspot at y=2 cm; guess z=50 cm for mean interaction position (dump face at 25 cm, interaction length 16.77 cm)
 
     while(ei < n_hepmc){
 
@@ -84,7 +85,9 @@ int main(int argc,char** argv)
         f_exp->SetParameter(0, kl.Beta()*kl.Gamma()*ctau);
 
         vz = f_exp->GetRandom();
-        SetPxPyPzM(vtx, vz*kl.Px()/kl.Pz(), vz*kl.Px()/kl.Pz(), vz, m);
+        SetPxPyPzM(vtx, vz*kl.Px()/kl.P() + vtx_prod[0],
+                   vz*kl.Py()/kl.P() + vtx_prod[1],
+                   vz*kl.Pz()/kl.P() + vtx_prod[2], m);
       	
         // create HepMC evt
         GenEvent* evt = new GenEvent(Units::GEV, Units::CM);
